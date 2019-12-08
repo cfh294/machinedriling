@@ -4,19 +4,22 @@ Utility objects for this project
 import functools
 import psycopg2
 import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, Column, String, BLOB, MetaData, TIMESTAMP
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from pathlib import PurePath
+from pathlib import PurePath, Path
 
 
 # root directory
 _root = PurePath(__file__).parent
+_dot_file = str(_root.parent / ".env")
+load_dotenv(dotenv_path=_dot_file)
 
 # grab configuration settings
-connection_string = f"{os.environ.get('rdbms')}://"\
-                    f"{os.environ.get('user')}:{os.environ.get('password')}"\
-                    f"@{os.environ.get('host')}/{os.environ.get('database')}"
+connection_string = f"{os.getenv('rdbms')}://"\
+                    f"{os.getenv('user')}:{os.getenv('password')}"\
+                    f"@{os.getenv('host')}/{os.getenv('database')}"
 engine = create_engine(connection_string, pool_pre_ping=True)
 session_maker = sessionmaker()
 _base = declarative_base(MetaData())
@@ -31,6 +34,15 @@ class Tweet(_base):
     tweet_text = Column(String)
     tweet_date = Column(TIMESTAMP)
     
+
+class CreatedTweet(_base):
+    __tablename__ = "created_tweet"    
+    __table_args__ = dict(schema="wtm")
+
+    tweet_user = Column(String, primary_key=True)
+    tweet_text = Column(String)
+    create_date = Column(TIMESTAMP, primary_key=True)
+
 
 class ModelData(_base):
     __tablename__ = "model"

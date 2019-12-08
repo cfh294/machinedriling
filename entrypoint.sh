@@ -1,10 +1,9 @@
 #!/bin/bash
-### docker-entrypoint.sh
+### entrypoint.sh
 ### to be run as the ENTRYPOINT within a container
 
-# Check APP_ENVIRONMENT
 if [[ -z "$update_flag" ]]; then
-    ./model_generator.py -a ${account} -e ${epochs} -c 10 -u
+    ./tweet_generator.py -a ${account} -e ${epochs} -c ${tweet_count} 
 else
-    ./model_generator.py -a ${account} -e ${epochs} -c 10
+    ./tweet_generator.py -a ${account} -e ${epochs} -c ${tweet_count} -u
 fi

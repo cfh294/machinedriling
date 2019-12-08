@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-bot.py
+tweet_generator.py
 
-Shitposting bot that attempts to create a tweet in the style of a "weird" Twitter account.
+Create a tweet in the style of a "weird" Twitter account.
 """
 import argparse
 import pandas
@@ -13,9 +13,10 @@ import spacy
 import collections
 import pathlib
 from io import BytesIO
+from datetime import datetime
 from six.moves import cPickle
 from sqlalchemy import func
-from utils import clean_account_name, with_engine, with_sql, with_connection, with_session, ModelData, Tweet, AttrDict, session_maker
+from utils import clean_account_name, with_engine, with_sql, with_connection, with_session, ModelData, Tweet, AttrDict, CreatedTweet, session_maker
 from keras.models import Sequential, Model, load_model
 from keras.layers import Dense, Activation, Dropout
 from keras.layers import LSTM, Input, Bidirectional
@@ -70,7 +71,6 @@ def generate_vocab(session, model_data, account, word_list):
         word_counts = collections.Counter(word_list)
 
         # Mapping from index to word : that's the vocabulary
-        # vocabulary_inv = list(sorted(word_counts.most_common(), key=lambda w: w[1]))
         vocabulary_inv = [x[0] for x in word_counts.most_common()]
         vocabulary_inv = list(sorted(vocabulary_inv))
 
@@ -234,7 +234,12 @@ def main(session, cmd_line):
         model_data = get_model_data(session, cmd_line.account)
         model, words, vocab, vocab_inv = generate_model(session, model_data, cmd_line.account, cmd_line.epochs, seq_length, cmd_line.update_model)
         for i in range(cmd_line.count):
-            print(generate_sentence(model, seq_length, vocab, vocab_inv, words))
+            sentence = generate_sentence(model, seq_length, vocab, vocab_inv, words)
+            session.add(
+                CreatedTweet(tweet_user=cmd_line.account, tweet_text=sentence, create_date=datetime.now())
+            )
+            session.commit()
+            print(sentence)
     else:
         print(f"Specified account ({cmd_line.account}) has 0 tweets in the database.")
 
