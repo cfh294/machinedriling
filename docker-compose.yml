@@ -1,0 +1,6 @@
+version: '3.4'
+services:
+  model_generator:
+    env_file: 
+      - .env
+    build: .
