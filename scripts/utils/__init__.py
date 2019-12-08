@@ -13,7 +13,7 @@ from pathlib import PurePath, Path
 
 # root directory
 _root = PurePath(__file__).parent
-_dot_file = str(_root.parent / ".env")
+_dot_file = str(_root.parent.parent / ".env")
 load_dotenv(dotenv_path=_dot_file)
 
 # grab configuration settings

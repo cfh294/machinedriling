@@ -19,26 +19,26 @@ Configure your ```.pgpass``` file to have an entry for the PostgreSQL host. Use 
 
 Create the necessary tables (if needed):
 ```shell script
-./setup.sh <database host> <database user> <database name>
+./scripts/setup.sh <database host> <database user> <database name>
 ```
 
 Scrape tweets:
 ```shell script
-./scraper.py -o <output json file path>
+./scripts/scraper.py -o <output json file path>
 ```
 
 Load tweets:
 ```shell script
-./tweet2db.py -f <input json file path>
+./scripts/tweet2db.py -f <input json file path>
 ```
 
 ## Generating Tweets
 Locally:
 ```shell script
-./model_generator.py -a <account> -c <number of tweets to generate>
+./scripts/tweet_generator.py -a <account> -c <number of tweets to generate>
 ```
 
-Docker
+Docker:
 ```shell script
 # relies on settings in .env file!
 docker-compose up --build
@@ -51,17 +51,17 @@ docker-compose up --build
 Scrapes all of the tweets from [this site](https://cooltweets.herokuapp.com/) 
 and inserts them into a ```json``` file.
 ```shell script
-./scraper.py [-o, --output-file] [-nl, --no-logging]
+./scripts/scraper.py [-o, --output-file] [-nl, --no-logging]
 ```
 
 ### tweet2db.py
 Takes in a ```json``` file (produced by ```scraper.py```) and inserts it into PostgreSQL.
 ```shell script
-./tweet2db.py [-f, --file-path] [-n, --chunk-size]
+./scripts/tweet2db.py [-f, --file-path] [-n, --chunk-size]
 ```
 
 ### tweet_generator
 Generates a tweet in the style of the given account. Generates a odel for the account if it doesn't already exist in the database. 
 ```shell script
-./tweet_generator.py [-a, --acount] [-c, --count] [-e, --epochs] [-u, --update-model]
+./scripts/tweet_generator.py [-a, --acount] [-c, --count] [-e, --epochs] [-u, --update-model]
 ```

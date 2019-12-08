@@ -3,9 +3,6 @@
 scraper.py
 
 Scrapes a bunch of tweets from a tweet aggregation site (https://cooltweets.herokuapp.com/)
-
-Usage:
-   ./scraper.py [-nl, --no-logging]
 """
 import requests
 import logging

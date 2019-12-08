@@ -15,6 +15,6 @@ fi
 
 echo "Creating necessary tables..."
 for ddl in "tweet" "created_tweet" "model"; do
-    psql -h ${1} -U ${2} ${3} -a -f ./utils/sql/${ddl}.ddl.sql 
+    psql -h ${1} -U ${2} ${3} -a -f ../utils/sql/${ddl}.ddl.sql 
 done
 echo "Done."
