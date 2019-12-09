@@ -16,7 +16,7 @@ from io import BytesIO
 from datetime import datetime
 from six.moves import cPickle
 from sqlalchemy import func
-from utils import clean_account_name, with_engine, with_sql, with_connection, with_session, ModelData, Tweet, AttrDict, CreatedTweet, session_maker
+from utils import clean_account_name, with_engine, with_sql, with_connection, with_session, ModelData, Tweet, CreatedTweet, session_maker
 from keras.models import Sequential, Model, load_model
 from keras.layers import Dense, Activation, Dropout
 from keras.layers import LSTM, Input, Bidirectional

@@ -9,6 +9,7 @@ import logging
 import argparse
 import json
 import os
+from utils import Tweet, engine, session_maker
 from bs4 import BeautifulSoup
 
 _url = "https://cooltweets.herokuapp.com/"
@@ -36,6 +37,22 @@ def with_cmd_line_args(f):
         ap.add_argument("-nl", "--no-logging", action="store_true", default=False, help="Turn off logging.")
         return f(ap.parse_args(), *args, **kwargs)
     return with_cmd_line_args_
+
+
+def insert_tweets(tweet_list):
+    session = session_maker(engine)()
+    for indx, tweet in enumerate(tweet_list):
+        try:
+            session.add(tweet)
+            if indx % 100 == 0:
+                session.commit()
+        except:
+            if session:
+                session.close()
+            session = session_maker(engine)()
+            session.add(tweet)
+            session.commit()
+    session.commit()
 
 
 @with_cmd_line_args
@@ -80,18 +97,13 @@ def main(cmd_line):
                     tweet_text = tweet.find("div", {"class": "text"}).text.strip()
                     tweet_dt = tweet.find("div", {"class": "time"}).text.strip()
                     tweet_list.append(
-                        dict(tweet_id=tweet_id, tweet_user=user, tweet_text=tweet_text, tweet_date=tweet_dt)
+                        Tweet(tweet_id=tweet_id, tweet_user=user, tweet_text=tweet_text, tweet_date=tweet_dt)
                     )
                 logging.info("Done.")
             else:
                 logging.warning(f"Could not retrieve tweets for @{user}, skipping.")
 
-        # insert the tweet data into the database table
-        if tweet_list:
-            logging.info(f"Writing tweets into to {cmd_line.output_file}...")
-            with open(cmd_line.output_file, "w") as output_file:
-                output_file.write(json.dumps(dict(tweets=tweet_list)))
-                logging.info("Done.")
+        insert_tweets(tweet_list)
     else:
         logging.error("Could not retrieve accounts.")
 
