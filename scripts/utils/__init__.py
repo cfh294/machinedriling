@@ -4,12 +4,14 @@ Utility objects for this project
 import functools
 import psycopg2
 import os
+import threading
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, Column, String, BLOB, MetaData, TIMESTAMP, exc, event
 from sqlalchemy.pool import Pool
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from pathlib import PurePath, Path
+from datetime import datetime
 
 
 # root directory
@@ -62,6 +64,13 @@ class AttrDict(dict):
         self.__dict__ = self
 
 
+def _ping(session):
+    start = datetime.now()
+    while session:
+        if (datetime.now() - start).total_seconds() % 30 == 0:
+            session.execute("select 1")
+
+
 def clean_account_name(in_name):
     """
     Cleans account name input
@@ -87,6 +96,9 @@ def with_session(auto_commit=False):
             session = sessionmaker(bind=engine)()
             error = None
             try:
+                t = threading.Thread(target=_ping(session))
+                t.daemon = True
+                t.start()
                 session.execute("SET SESSION idle_in_transaction_session_timeout = '1440min'")
                 f(session, *args, **kwargs)
 
