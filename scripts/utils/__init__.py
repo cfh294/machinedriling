@@ -96,12 +96,7 @@ def with_session(auto_commit=False):
             session = sessionmaker(bind=engine)()
             error = None
             try:
-                t = threading.Thread(target=_ping(session))
-                t.daemon = True
-                t.start()
-                session.execute("SET SESSION idle_in_transaction_session_timeout = '1440min'")
                 f(session, *args, **kwargs)
-
             except Exception as e:
                 session.rollback()
                 error = e
