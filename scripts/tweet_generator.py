@@ -187,7 +187,7 @@ def bidirectional_lstm_model(seq_length, vocab_size):
     model.add(Activation('softmax'))
     
     optimizer = Adam(lr=learning_rate)
-    callbacks=[EarlyStopping(patience=2, monitor='val_loss')]
+    callbacks = [EarlyStopping(patience=2, monitor='val_loss')]
     model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=[categorical_accuracy])
     return model
 

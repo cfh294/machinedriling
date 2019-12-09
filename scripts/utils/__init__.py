@@ -5,7 +5,8 @@ import functools
 import psycopg2
 import os
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, Column, String, BLOB, MetaData, TIMESTAMP
+from sqlalchemy import create_engine, Column, String, BLOB, MetaData, TIMESTAMP, exc, event
+from sqlalchemy.pool import Pool
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from pathlib import PurePath, Path
@@ -20,7 +21,7 @@ load_dotenv(dotenv_path=_dot_file)
 connection_string = f"{os.getenv('rdbms')}://"\
                     f"{os.getenv('user')}:{os.getenv('password')}"\
                     f"@{os.getenv('host')}/{os.getenv('database')}"
-engine = create_engine(connection_string, pool_pre_ping=True)
+engine = create_engine(connection_string, pool_pre_ping=True, pool_recycle=1800, connect_args=dict(connect_timeout="86400"))
 session_maker = sessionmaker()
 _base = declarative_base(MetaData())
 
@@ -86,7 +87,9 @@ def with_session(auto_commit=False):
             session = sessionmaker(bind=engine)()
             error = None
             try:
+                session.execute("SET SESSION idle_in_transaction_session_timeout = '1440min'")
                 f(session, *args, **kwargs)
+
             except Exception as e:
                 session.rollback()
                 error = e
