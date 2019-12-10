@@ -28,9 +28,7 @@ def generate_tweets(run):
     tweets = list(
         map(
             lambda x: x.strip(),
-            gpt2.generate(
-                sess, checkpoint_dir=checkpoint_dir, run_name=run, return_as_list=True
-            )[0].split("\n"),
+            gpt2.generate(sess, run_name=run, return_as_list=True)[0].split("\n"),
         )
     )
     return tweets
@@ -53,6 +51,7 @@ def post_tweet(tweet):
 
 def main(run="run1", output="twitter"):
     in_tweet_list = generate_tweets(run)
+    print(f"Using run: {run}")
 
     # Create a tweet
     for tweet in set(in_tweet_list):
