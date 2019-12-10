@@ -33,7 +33,6 @@ def with_cmd_line_args(f):
     """
     def with_cmd_line_args_(*args, **kwargs):
         ap = argparse.ArgumentParser()
-        ap.add_argument("-o", "--output-file", type=validate_filepath, required=True, help="The output file location.")
         ap.add_argument("-nl", "--no-logging", action="store_true", default=False, help="Turn off logging.")
         return f(ap.parse_args(), *args, **kwargs)
     return with_cmd_line_args_

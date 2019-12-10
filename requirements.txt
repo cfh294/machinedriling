@@ -1,11 +1,9 @@
 python-dotenv
-tensorflow
 requests
 beautifulsoup4
-psycopg2-binary
-pandas
 sqlalchemy
 numpy
-keras
-spacy
-
+tweepy
+gpt_2_simple
+tqdm
+fire

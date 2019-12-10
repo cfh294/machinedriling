@@ -1,5 +1,8 @@
-# ShitpostBot
+# machinedriling
+A ```gpt-2```-backed bot that posts generated tweets in the style of [@dril]([http](https://twitter.com/dril)). @dril tweets were scraped using [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) and stored in a ```PostgreSQL``` database. All database-related code 
+utilizes [SQLAlchemy](https://www.sqlalchemy.org/). 
 
+Based on https://github.com/minimaxir/gpt-2-simple
 
 ## Configuration
 
@@ -22,46 +25,21 @@ Create the necessary tables (if needed):
 ./scripts/setup.sh <database host> <database user> <database name>
 ```
 
-Scrape tweets:
-```shell script
-./scripts/scraper.py -o <output json file path>
-```
-
-Load tweets:
-```shell script
-./scripts/tweet2db.py -f <input json file path>
-```
-
-## Generating Tweets
-Locally:
-```shell script
-./scripts/tweet_generator.py -a <account> -c <number of tweets to generate>
-```
-
-Docker:
-```shell script
-# relies on settings in .env file!
-docker-compose up --build
-```
-
-*Note: you may need to increase your allocated RAM for the Docker daemon to run this. Tensorflow uses a decent chunk of memory.*
-
 ## Scripts
+
 ### scraper.py
-Scrapes all of the tweets from [this site](https://cooltweets.herokuapp.com/) 
-and inserts them into a ```json``` file.
 ```shell script
-./scripts/scraper.py [-o, --output-file] [-nl, --no-logging]
+./scripts/scraper.py [-u, --user] [-nl, --no-logging]
 ```
 
-### tweet2db.py
-Takes in a ```json``` file (produced by ```scraper.py```) and inserts it into PostgreSQL.
+### bot.py
+Generates a string of tweets. 
 ```shell script
-./scripts/tweet2db.py [-f, --file-path] [-n, --chunk-size]
+./scripts/bot.py
 ```
 
-### tweet_generator
-Generates a tweet in the style of the given account. Generates a odel for the account if it doesn't already exist in the database. 
-```shell script
-./scripts/tweet_generator.py [-a, --acount] [-c, --count] [-e, --epochs] [-u, --update-model]
+### get_tweet_txt.py 
+Converts a list of tweets to an output ```.txt``` file. 
+```shell script 
+./scripts/get_tweet_txt.py [-u, --user] [-f, --file]
 ```
