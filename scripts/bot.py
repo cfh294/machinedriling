@@ -17,11 +17,15 @@ def generate_tweets(run):
     Generate a couple tweets from our already 
     trained and tuned model 
     """
-    checkpoint_dir = Path("./checkpoint").absolute()
-    
+    # Ensure that the path is correct, even for cron... 
+    checkpoint_dir = Path("checkpoint").absolute()
+
+    # Start tensorflow session & load our model
     sess = gpt2.start_tf_sess()
     gpt2.load_gpt2(sess, checkpoint_dir=checkpoint_dir, run_name=run)
-    tweets = list(map(lambda x: x.strip(), gpt2.generate(sess, run_name=run, return_as_list=True)[0].split("\n")))
+
+    # Generate and return tweets
+    tweets = list(map(lambda x: x.strip(), gpt2.generate(sess, checkpoint_dir=checkpoint_dir, run_name=run, return_as_list=True)[0].split("\n")))
     return tweets
 
 
