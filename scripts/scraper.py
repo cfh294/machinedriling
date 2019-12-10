@@ -31,10 +31,18 @@ def with_cmd_line_args(f):
     :param f: the function to be decorated
     :return:  the decorated function
     """
+
     def with_cmd_line_args_(*args, **kwargs):
         ap = argparse.ArgumentParser()
-        ap.add_argument("-nl", "--no-logging", action="store_true", default=False, help="Turn off logging.")
+        ap.add_argument(
+            "-nl",
+            "--no-logging",
+            action="store_true",
+            default=False,
+            help="Turn off logging.",
+        )
         return f(ap.parse_args(), *args, **kwargs)
+
     return with_cmd_line_args_
 
 
@@ -96,7 +104,12 @@ def main(cmd_line):
                     tweet_text = tweet.find("div", {"class": "text"}).text.strip()
                     tweet_dt = tweet.find("div", {"class": "time"}).text.strip()
                     tweet_list.append(
-                        Tweet(tweet_id=tweet_id, tweet_user=user, tweet_text=tweet_text, tweet_date=tweet_dt)
+                        Tweet(
+                            tweet_id=tweet_id,
+                            tweet_user=user,
+                            tweet_text=tweet_text,
+                            tweet_date=tweet_dt,
+                        )
                     )
                 logging.info("Done.")
             else:
@@ -109,4 +122,5 @@ def main(cmd_line):
 
 # run program
 if __name__ == "__main__":
+    # pylint: disable=no-value-for-parameter
     main()
