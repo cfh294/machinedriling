@@ -1,0 +1,6 @@
+python-dotenv
+tweepy
+gpt_2_simple
+tqdm
+fire
+tensorflow==1.15

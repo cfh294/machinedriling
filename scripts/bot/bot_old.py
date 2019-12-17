@@ -4,6 +4,7 @@ import gpt_2_simple as gpt2
 import fire
 import tweepy
 import tqdm
+import random
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -54,11 +55,15 @@ def main(run="run1", output="twitter"):
     print(f"Using run: {run}")
 
     # Create a tweet
+    tweet = random.choice(in_tweet_list)
+    print(tweet)
+    """
     for tweet in set(in_tweet_list):
         if output == "twitter":
             post_tweet(tweet)
         else:
             print(tweet)
+    """
 
 
 if __name__ == "__main__":
