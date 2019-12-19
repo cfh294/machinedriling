@@ -1,0 +1,2 @@
+PYTHONPATH=/usr/local/lib/python3.7/site-packages
+*/15 * * * * cd /usr/src/app/; python3 bot.py > /proc/1/fd/1 2>/proc/1/fd/2

@@ -5,7 +5,6 @@ import fire
 import tweepy
 import tqdm
 import random
-import time
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -56,18 +55,16 @@ def post_tweet(tweet):
         pass
 
 
-def main(run="run1"):
+def main(run="run1", output="twitter"):
     sess = load_model(run)
 
-    while True:
-        print("Generating Tweet")
-        # Create a tweet
-        in_tweet_list = generate_tweets(run, sess)
-        tweet = random.choice(in_tweet_list)
+    print("Generating Tweet")
+    # Create a tweet
+    tweet = random.choice(generate_tweets(run, sess))
+    if output == "twitter":
         post_tweet(tweet)
-        # Sleep for 15min
-        print("Sleeping for 15min")
-        time.sleep(900)
+    else:
+        print(tweet)
 
 
 if __name__ == "__main__":
