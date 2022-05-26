@@ -3,4 +3,4 @@ tweepy
 gpt_2_simple
 tqdm
 fire
-tensorflow==1.15
+tensorflow==2.7.2
